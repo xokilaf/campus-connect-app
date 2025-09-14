@@ -8,6 +8,13 @@ import LoginForm from "./components/auth/LoginForm";
 import AppLayout from "./components/layout/AppLayout";
 import Dashboard from "./pages/Dashboard";
 import NotesSharing from "./pages/NotesSharing";
+import Timetable from "./pages/Timetable";
+import Assignments from "./pages/Assignments";
+import Attendance from "./pages/Attendance";
+import DoubtForum from "./pages/DoubtForum";
+import FeeTracking from "./pages/FeeTracking";
+import Maintenance from "./pages/Maintenance";
+import Certificates from "./pages/Certificates";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,13 +31,13 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/notes" element={<NotesSharing />} />
-        <Route path="/timetable" element={<div className="text-center py-20"><h1 className="text-2xl font-bold">Timetable</h1><p className="text-muted-foreground">Coming soon...</p></div>} />
-        <Route path="/assignments" element={<div className="text-center py-20"><h1 className="text-2xl font-bold">Assignments</h1><p className="text-muted-foreground">Coming soon...</p></div>} />
-        <Route path="/attendance" element={<div className="text-center py-20"><h1 className="text-2xl font-bold">Attendance</h1><p className="text-muted-foreground">Coming soon...</p></div>} />
-        <Route path="/forum" element={<div className="text-center py-20"><h1 className="text-2xl font-bold">Doubt Forum</h1><p className="text-muted-foreground">Coming soon...</p></div>} />
-        <Route path="/fees" element={<div className="text-center py-20"><h1 className="text-2xl font-bold">Fee Tracking</h1><p className="text-muted-foreground">Coming soon...</p></div>} />
-        <Route path="/maintenance" element={<div className="text-center py-20"><h1 className="text-2xl font-bold">Maintenance</h1><p className="text-muted-foreground">Coming soon...</p></div>} />
-        <Route path="/certificates" element={<div className="text-center py-20"><h1 className="text-2xl font-bold">Certificates</h1><p className="text-muted-foreground">Coming soon...</p></div>} />
+        <Route path="/timetable" element={<Timetable />} />
+        <Route path="/assignments" element={<Assignments />} />
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/forum" element={<DoubtForum />} />
+        <Route path="/fees" element={<FeeTracking />} />
+        <Route path="/maintenance" element={<Maintenance />} />
+        <Route path="/certificates" element={<Certificates />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>
