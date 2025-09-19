@@ -12,9 +12,7 @@ import Timetable from "./pages/Timetable";
 import Assignments from "./pages/Assignments";
 import Attendance from "./pages/Attendance";
 import DoubtForum from "./pages/DoubtForum";
-import FeeTracking from "./pages/FeeTracking";
 import Maintenance from "./pages/Maintenance";
-import Certificates from "./pages/Certificates";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,10 +32,8 @@ function AppRoutes() {
         <Route path="/timetable" element={<Timetable />} />
         <Route path="/assignments" element={<Assignments />} />
         <Route path="/attendance" element={<Attendance />} />
-        <Route path="/forum" element={<DoubtForum />} />
-        <Route path="/fees" element={<FeeTracking />} />
+        <Route path="/doubts" element={<DoubtForum />} />
         <Route path="/maintenance" element={<Maintenance />} />
-        <Route path="/certificates" element={<Certificates />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>
