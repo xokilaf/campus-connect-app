@@ -8,6 +8,7 @@ export interface User {
   email: string;
   role: UserRole;
   avatar?: string;
+  className?: string;
 }
 
 interface AuthContextType {
@@ -15,6 +16,9 @@ interface AuthContextType {
   login: (email: string, password: string, role: UserRole) => boolean;
   logout: () => void;
   isAuthenticated: boolean;
+  selectClass: (className: string) => void;
+  availableClasses: string[];
+  needsClassSelection: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -47,6 +51,8 @@ const mockUsers: User[] = [
   },
 ];
 
+const availableClasses = ['CSE-A', 'CSE-B', 'ECE-A', 'ECE-B', 'IT-A', 'IT-B'];
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
@@ -57,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
     
     if (foundUser) {
+      // Don't set className for students initially, they need to select it
       setUser(foundUser);
       return true;
     }
@@ -67,11 +74,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const selectClass = (className: string) => {
+    if (user) {
+      setUser({ ...user, className });
+    }
+  };
+
+  const needsClassSelection = !!user && user.role === 'student' && !user.className;
+
   const value = {
     user,
     login,
     logout,
     isAuthenticated: !!user,
+    selectClass,
+    availableClasses,
+    needsClassSelection,
   };
 
   return (

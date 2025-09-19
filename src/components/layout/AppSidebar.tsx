@@ -22,9 +22,7 @@ import {
   FileText,
   Users,
   MessageSquare,
-  CreditCard,
   Wrench,
-  Award,
   Home,
   LogOut,
   GraduationCap,
@@ -36,10 +34,8 @@ const studentMenuItems = [
   { title: 'Timetable', url: '/timetable', icon: Calendar },
   { title: 'Assignments', url: '/assignments', icon: FileText },
   { title: 'Attendance', url: '/attendance', icon: Users },
-  { title: 'Doubt Forum', url: '/forum', icon: MessageSquare },
-  { title: 'Fee Tracking', url: '/fees', icon: CreditCard },
+  { title: 'Doubt Forum', url: '/doubts', icon: MessageSquare },
   { title: 'Maintenance', url: '/maintenance', icon: Wrench },
-  { title: 'Certificates', url: '/certificates', icon: Award },
 ];
 
 const facultyMenuItems = [
@@ -48,7 +44,7 @@ const facultyMenuItems = [
   { title: 'Timetable', url: '/timetable', icon: Calendar },
   { title: 'Assignments', url: '/assignments', icon: FileText },
   { title: 'Attendance', url: '/attendance', icon: Users },
-  { title: 'Doubt Forum', url: '/forum', icon: MessageSquare },
+  { title: 'Doubt Forum', url: '/doubts', icon: MessageSquare },
   { title: 'Maintenance', url: '/maintenance', icon: Wrench },
 ];
 
@@ -122,6 +118,7 @@ export function AppSidebar() {
                 <p className="text-sm font-medium truncate">{user?.name}</p>
                 <p className="text-xs text-sidebar-foreground/70 capitalize">
                   {user?.role}
+                  {user?.className && ` • ${user.className}`}
                 </p>
               </div>
             )}
