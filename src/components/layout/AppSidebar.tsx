@@ -118,6 +118,7 @@ export function AppSidebar() {
                 <p className="text-sm font-medium truncate">{user?.name}</p>
                 <p className="text-xs text-sidebar-foreground/70 capitalize">
                   {user?.role}
+                  {user?.className && ` • ${user.className}`}
                 </p>
               </div>
             )}

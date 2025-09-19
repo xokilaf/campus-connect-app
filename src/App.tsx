@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import LoginForm from "./components/auth/LoginForm";
+import ClassSelection from "./components/auth/ClassSelection";
 import AppLayout from "./components/layout/AppLayout";
 import Dashboard from "./pages/Dashboard";
 import NotesSharing from "./pages/NotesSharing";
@@ -18,10 +19,14 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 function AppRoutes() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, needsClassSelection } = useAuth();
 
   if (!isAuthenticated) {
     return <LoginForm />;
+  }
+
+  if (needsClassSelection) {
+    return <ClassSelection />;
   }
 
   return (
