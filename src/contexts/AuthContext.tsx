@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { User as SupabaseUser, Session } from '@supabase/supabase-js';
 
 export type UserRole = 'student' | 'faculty';
 
@@ -13,9 +15,12 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string, role: UserRole) => boolean;
-  logout: () => void;
+  session: Session | null;
+  login: (email: string, password: string) => Promise<{ error: any }>;
+  signup: (email: string, password: string, name: string, role: UserRole) => Promise<{ error: any }>;
+  logout: () => Promise<void>;
   isAuthenticated: boolean;
+  loading: boolean;
   selectClass: (className: string) => void;
   availableClasses: string[];
   needsClassSelection: boolean;
@@ -23,55 +28,83 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock users for demo
-const mockUsers: User[] = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'student1@campus.edu',
-    role: 'student',
-  },
-  {
-    id: '2',
-    name: 'Dr. Jane Smith',
-    email: 'faculty1@campus.edu',
-    role: 'faculty',
-  },
-  {
-    id: '3',
-    name: 'Alice Johnson',
-    email: 'student2@campus.edu',
-    role: 'student',
-  },
-  {
-    id: '4',
-    name: 'Prof. Robert Brown',
-    email: 'faculty2@campus.edu',
-    role: 'faculty',
-  },
-];
-
 const availableClasses = ['CSE-A', 'CSE-B', 'ECE-A', 'ECE-B', 'IT-A', 'IT-B'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (email: string, password: string, role: UserRole): boolean => {
-    // Simple mock authentication
-    const foundUser = mockUsers.find(u => 
-      u.email.toLowerCase() === email.toLowerCase() && u.role === role
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        
+        if (session?.user) {
+          // Fetch user profile from profiles table
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+            
+          if (profile) {
+            setUser({
+              id: profile.id,
+              name: profile.name,
+              email: profile.email,
+              role: profile.role,
+              className: undefined // Will be set by class selection
+            });
+          }
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      }
     );
-    
-    if (foundUser) {
-      // Don't set className for students initially, they need to select it
-      setUser(foundUser);
-      return true;
-    }
-    return false;
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (!session) {
+        setLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    return { error };
   };
 
-  const logout = () => {
+  const signup = async (email: string, password: string, name: string, role: UserRole) => {
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          name,
+          role
+        }
+      }
+    });
+    return { error };
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
+    setSession(null);
   };
 
   const selectClass = (className: string) => {
@@ -84,9 +117,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = {
     user,
+    session,
     login,
+    signup,
     logout,
     isAuthenticated: !!user,
+    loading,
     selectClass,
     availableClasses,
     needsClassSelection,
