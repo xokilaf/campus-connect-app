@@ -1,6 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { User as SupabaseUser, Session } from '@supabase/supabase-js';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export type UserRole = 'student' | 'faculty';
 
@@ -15,10 +13,9 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  session: Session | null;
   login: (email: string, password: string) => Promise<{ error: any }>;
   signup: (email: string, password: string, name: string, role: UserRole) => Promise<{ error: any }>;
-  logout: () => Promise<void>;
+  logout: () => void;
   isAuthenticated: boolean;
   loading: boolean;
   selectClass: (className: string) => void;
@@ -28,83 +25,93 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Mock users for demo
+const mockUsers: User[] = [
+  {
+    id: '1',
+    name: 'John Doe',
+    email: 'student1@campus.edu',
+    role: 'student',
+  },
+  {
+    id: '2',
+    name: 'Dr. Jane Smith',
+    email: 'faculty1@campus.edu',
+    role: 'faculty',
+  },
+  {
+    id: '3',
+    name: 'Alice Johnson',
+    email: 'student2@campus.edu',
+    role: 'student',
+  },
+  {
+    id: '4',
+    name: 'Prof. Robert Brown',
+    email: 'faculty2@campus.edu',
+    role: 'faculty',
+  },
+];
+
 const availableClasses = ['CSE-A', 'CSE-B', 'ECE-A', 'ECE-B', 'IT-A', 'IT-B'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        
-        if (session?.user) {
-          // Fetch user profile from profiles table
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-            
-          if (profile) {
-            setUser({
-              id: profile.id,
-              name: profile.name,
-              email: profile.email,
-              role: profile.role,
-              className: undefined // Will be set by class selection
-            });
-          }
-        } else {
-          setUser(null);
-        }
-        setLoading(false);
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (!session) {
-        setLoading(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-    return { error };
-  };
-
-  const signup = async (email: string, password: string, name: string, role: UserRole) => {
-    const redirectUrl = `${window.location.origin}/`;
+  const login = async (email: string, password: string): Promise<{ error: any }> => {
+    setLoading(true);
     
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          name,
-          role
-        }
-      }
-    });
-    return { error };
+    // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    const foundUser = mockUsers.find(u => 
+      u.email.toLowerCase() === email.toLowerCase()
+    );
+    
+    setLoading(false);
+    
+    if (foundUser && password === 'demo') {
+      setUser(foundUser);
+      return { error: null };
+    }
+    
+    return { error: { message: 'Invalid credentials' } };
   };
 
-  const logout = async () => {
-    await supabase.auth.signOut();
+  const signup = async (email: string, password: string, name: string, role: UserRole): Promise<{ error: any }> => {
+    setLoading(true);
+    
+    // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Check if user already exists
+    const existingUser = mockUsers.find(u => 
+      u.email.toLowerCase() === email.toLowerCase()
+    );
+    
+    setLoading(false);
+    
+    if (existingUser) {
+      return { error: { message: 'User already exists' } };
+    }
+    
+    // Create new user
+    const newUser: User = {
+      id: String(mockUsers.length + 1),
+      name,
+      email,
+      role,
+    };
+    
+    mockUsers.push(newUser);
+    setUser(newUser);
+    
+    return { error: null };
+  };
+
+  const logout = () => {
     setUser(null);
-    setSession(null);
   };
 
   const selectClass = (className: string) => {
@@ -117,7 +124,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = {
     user,
-    session,
     login,
     signup,
     logout,

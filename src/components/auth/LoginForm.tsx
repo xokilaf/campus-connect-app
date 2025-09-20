@@ -27,7 +27,7 @@ export default function LoginForm() {
         if (error) {
           toast.error(error.message || 'Failed to create account');
         } else {
-          toast.success('Account created! Please check your email to verify your account.');
+          toast.success('Account created successfully! You are now logged in.');
         }
       } else {
         const { error } = await login(email, password);
@@ -144,6 +144,55 @@ export default function LoginForm() {
                 {isLoading ? (isSignup ? 'Creating Account...' : 'Signing in...') : (isSignup ? 'Create Account' : 'Sign In')}
               </Button>
             </form>
+
+            {/* Demo Accounts */}
+            <div className="mt-6 pt-6 border-t">
+              <p className="text-sm text-muted-foreground text-center mb-3">
+                Demo Accounts (Click to auto-fill)
+              </p>
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-left"
+                  onClick={() => {
+                    setEmail('student1@campus.edu');
+                    setPassword('demo');
+                    setIsSignup(false);
+                  }}
+                >
+                  <div className="flex items-center space-x-2">
+                    <BookOpen className="h-4 w-4" />
+                    <div>
+                      <div className="font-medium">John Doe</div>
+                      <div className="text-xs text-muted-foreground">
+                        student1@campus.edu • student
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-left"
+                  onClick={() => {
+                    setEmail('faculty1@campus.edu');
+                    setPassword('demo');
+                    setIsSignup(false);
+                  }}
+                >
+                  <div className="flex items-center space-x-2">
+                    <Users className="h-4 w-4" />
+                    <div>
+                      <div className="font-medium">Dr. Jane Smith</div>
+                      <div className="text-xs text-muted-foreground">
+                        faculty1@campus.edu • faculty
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            </div>
 
             {/* Toggle between login/signup */}
             <div className="mt-4 text-center">
