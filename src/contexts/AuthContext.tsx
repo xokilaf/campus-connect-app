@@ -13,9 +13,11 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string, role: UserRole) => boolean;
+  login: (email: string, password: string) => Promise<{ error: any }>;
+  signup: (email: string, password: string, name: string, role: UserRole) => Promise<{ error: any }>;
   logout: () => void;
   isAuthenticated: boolean;
+  loading: boolean;
   selectClass: (className: string) => void;
   availableClasses: string[];
   needsClassSelection: boolean;
@@ -51,23 +53,61 @@ const mockUsers: User[] = [
   },
 ];
 
-const availableClasses = ['CSE-A', 'CSE-B', 'ECE-A', 'ECE-B', 'IT-A', 'IT-B'];
+const availableClasses = ['IT-A', 'IT-B', 'CSE-A', 'CSE-B'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const login = (email: string, password: string, role: UserRole): boolean => {
-    // Simple mock authentication
+  const login = async (email: string, password: string): Promise<{ error: any }> => {
+    setLoading(true);
+    
+    // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
     const foundUser = mockUsers.find(u => 
-      u.email.toLowerCase() === email.toLowerCase() && u.role === role
+      u.email.toLowerCase() === email.toLowerCase()
     );
     
-    if (foundUser) {
-      // Don't set className for students initially, they need to select it
+    setLoading(false);
+    
+    if (foundUser && password === 'demo') {
       setUser(foundUser);
-      return true;
+      return { error: null };
     }
-    return false;
+    
+    return { error: { message: 'Invalid credentials' } };
+  };
+
+  const signup = async (email: string, password: string, name: string, role: UserRole): Promise<{ error: any }> => {
+    setLoading(true);
+    
+    // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Check if user already exists
+    const existingUser = mockUsers.find(u => 
+      u.email.toLowerCase() === email.toLowerCase()
+    );
+    
+    setLoading(false);
+    
+    if (existingUser) {
+      return { error: { message: 'User already exists' } };
+    }
+    
+    // Create new user
+    const newUser: User = {
+      id: String(mockUsers.length + 1),
+      name,
+      email,
+      role,
+    };
+    
+    mockUsers.push(newUser);
+    setUser(newUser);
+    
+    return { error: null };
   };
 
   const logout = () => {
@@ -85,8 +125,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = {
     user,
     login,
+    signup,
     logout,
     isAuthenticated: !!user,
+    loading,
     selectClass,
     availableClasses,
     needsClassSelection,
