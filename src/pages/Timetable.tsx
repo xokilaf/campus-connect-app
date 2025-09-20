@@ -125,7 +125,7 @@ timetableData = addBreaks(timetableData);
 
 // Faculty's personal timetable
 const facultyTimetable = {
-  "Dr. Smith": {
+  "Dr. Anjali Verma": {
     "Monday": {
       "9:00 AM": { class: "CSE-A", subject: "Data Structures", room: "CS-101" },
       "9:00 AM_IT": { class: "IT-A", subject: "Programming", room: "IT-101" },
