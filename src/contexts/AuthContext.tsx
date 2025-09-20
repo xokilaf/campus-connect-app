@@ -53,7 +53,7 @@ const mockUsers: User[] = [
   },
 ];
 
-const availableClasses = ['CSE-A', 'CSE-B', 'ECE-A', 'ECE-B', 'IT-A', 'IT-B'];
+const availableClasses = ['IT-A', 'IT-B', 'CSE-A', 'CSE-B'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
