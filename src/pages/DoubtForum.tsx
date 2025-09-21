@@ -34,14 +34,14 @@ const initialQuestions: Question[] = [
     title: "Help with Calculus Integration",
     content: "I'm struggling with integration by parts. Can someone explain the step-by-step process?",
     subject: "Mathematics",
-    author: "Alice Johnson",
+    author: "Sneha Gupta",
     role: "student",
     timestamp: "2024-01-15T10:30:00Z",
     resolved: false,
     replies: [
       {
         id: 1,
-        author: "Dr. Smith",
+        author: "Dr. Prakash Raj",
         role: "faculty",
         content: "Integration by parts uses the formula: ∫u dv = uv - ∫v du. First, identify u and dv, then apply the formula.",
         timestamp: "2024-01-15T11:00:00Z"
@@ -53,14 +53,14 @@ const initialQuestions: Question[] = [
     title: "Quantum Physics - Wave-Particle Duality",
     content: "Can someone explain how light can behave as both a wave and a particle?",
     subject: "Physics",
-    author: "John Doe",
+    author: "Devang Keloth",
     role: "student",
     timestamp: "2024-01-14T15:20:00Z",
     resolved: true,
     replies: [
       {
         id: 2,
-        author: "Prof. Johnson",
+        author: "Prof. Arjun Menon",
         role: "faculty",
         content: "This is explained by quantum mechanics. Light exhibits wave properties (interference, diffraction) and particle properties (photoelectric effect). The behavior depends on the experimental setup.",
         timestamp: "2024-01-14T16:00:00Z"
@@ -72,7 +72,7 @@ const initialQuestions: Question[] = [
     title: "Organic Chemistry Reaction Mechanisms",
     content: "What's the mechanism for nucleophilic substitution in alkyl halides?",
     subject: "Chemistry",
-    author: "Sarah Wilson",
+    author: "Kavya Nair",
     role: "student",
     timestamp: "2024-01-13T09:15:00Z",
     resolved: false,

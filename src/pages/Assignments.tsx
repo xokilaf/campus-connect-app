@@ -38,14 +38,14 @@ const initialAssignments: Assignment[] = [
     subject: "Mathematics",
     dueDate: "2024-01-20",
     maxMarks: 50,
-    assignedBy: "Dr. Smith",
+    assignedBy: "Dr. Prakash Raj",
     createdDate: "2024-01-10",
     attachments: ["problem_set_3.pdf"],
     submissions: [
       {
         id: 1,
         studentId: "1",
-        studentName: "John Doe",
+        studentName: "Devang Keloth",
         submissionDate: "2024-01-18",
         attachments: ["john_calculus_solution.pdf"],
         marks: 45,
@@ -60,7 +60,7 @@ const initialAssignments: Assignment[] = [
     subject: "Physics",
     dueDate: "2024-01-25",
     maxMarks: 100,
-    assignedBy: "Prof. Johnson",
+    assignedBy: "Prof. Arjun Menon",
     createdDate: "2024-01-12",
     attachments: ["lab_report_template.docx", "experiment_data.xlsx"],
     submissions: []
@@ -72,13 +72,13 @@ const initialAssignments: Assignment[] = [
     subject: "Chemistry",
     dueDate: "2024-01-30",
     maxMarks: 75,
-    assignedBy: "Dr. Brown",
+    assignedBy: "Dr. Umair Khan",
     createdDate: "2024-01-14",
     submissions: [
       {
         id: 2,
         studentId: "3",
-        studentName: "Alice Johnson",
+        studentName: "Sneha Gupta",
         submissionDate: "2024-01-28",
         attachments: ["environmental_chemistry_essay.pdf"],
         marks: 68,

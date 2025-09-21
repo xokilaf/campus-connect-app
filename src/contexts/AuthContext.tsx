@@ -29,25 +29,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const mockUsers: User[] = [
   {
     id: '1',
-    name: 'John Doe',
+    name: 'Devang Keloth',
     email: 'student1@campus.edu',
     role: 'student',
   },
   {
     id: '2',
-    name: 'Dr. Jane Smith',
+    name: 'Dr. Priya Sharma',
     email: 'faculty1@campus.edu',
     role: 'faculty',
   },
   {
     id: '3',
-    name: 'Alice Johnson',
+    name: 'Sneha Gupta',
     email: 'student2@campus.edu',
     role: 'student',
   },
   {
     id: '4',
-    name: 'Prof. Robert Brown',
+    name: 'Prof. Vikram Singh',
     email: 'faculty2@campus.edu',
     role: 'faculty',
   },
