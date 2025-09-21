@@ -31,7 +31,7 @@ const initialRequests: MaintenanceRequest[] = [
     location: "Room 101, Building A",
     priority: "High",
     status: "In Progress",
-    reportedBy: "John Doe",
+    reportedBy: "Devang Keloth",
     reportedDate: "2024-01-10",
     assignedTo: "Maintenance Team A"
   },
@@ -43,7 +43,7 @@ const initialRequests: MaintenanceRequest[] = [
     location: "Lecture Hall 1",
     priority: "Medium",
     status: "Pending",
-    reportedBy: "Dr. Smith",
+    reportedBy: "Dr. Prakash Raj",
     reportedDate: "2024-01-12"
   },
   {
@@ -54,7 +54,7 @@ const initialRequests: MaintenanceRequest[] = [
     location: "2nd Floor Restroom, Building B",
     priority: "High",
     status: "Resolved",
-    reportedBy: "Alice Johnson",
+    reportedBy: "Sneha Gupta",
     reportedDate: "2024-01-08",
     resolvedDate: "2024-01-09",
     assignedTo: "Plumbing Team"
@@ -67,7 +67,7 @@ const initialRequests: MaintenanceRequest[] = [
     location: "Library, Section C",
     priority: "Low",
     status: "Resolved",
-    reportedBy: "Sarah Wilson",
+    reportedBy: "Kavya Nair",
     reportedDate: "2024-01-05",
     resolvedDate: "2024-01-07",
     assignedTo: "Maintenance Team B"

@@ -10,12 +10,12 @@ import { useState } from "react";
 const studentAttendanceData = [
   {
     studentId: "STU001",
-    studentName: "John Doe",
+    studentName: "Devang Keloth",
     subjects: [
       {
         id: 1,
         subject: "Mathematics",
-        teacher: "Dr. Smith",
+        teacher: "Dr. Prakash Raj",
         totalClasses: 45,
         attended: 42,
         percentage: 93.3,
@@ -24,7 +24,7 @@ const studentAttendanceData = [
       {
         id: 2,
         subject: "Physics", 
-        teacher: "Prof. Johnson",
+        teacher: "Prof. Arjun Menon",
         totalClasses: 40,
         attended: 35,
         percentage: 87.5,
@@ -34,12 +34,12 @@ const studentAttendanceData = [
   },
   {
     studentId: "STU002", 
-    studentName: "Alice Johnson",
+    studentName: "Sneha Gupta",
     subjects: [
       {
         id: 1,
         subject: "Mathematics",
-        teacher: "Dr. Smith", 
+        teacher: "Dr. Prakash Raj",
         totalClasses: 45,
         attended: 38,
         percentage: 84.4,
@@ -48,7 +48,7 @@ const studentAttendanceData = [
       {
         id: 2,
         subject: "Physics",
-        teacher: "Prof. Johnson",
+        teacher: "Prof. Arjun Menon",
         totalClasses: 40, 
         attended: 32,
         percentage: 80.0,
@@ -63,7 +63,7 @@ const attendanceData = [
   {
     id: 1,
     subject: "Mathematics",
-    teacher: "Dr. Smith",
+    teacher: "Dr. Prakash Raj",
     totalClasses: 45,
     attended: 42,
     percentage: 93.3,
@@ -72,7 +72,7 @@ const attendanceData = [
   {
     id: 2,
     subject: "Physics",
-    teacher: "Prof. Johnson",
+    teacher: "Prof. Arjun Menon",
     totalClasses: 40,
     attended: 35,
     percentage: 87.5,
@@ -81,7 +81,7 @@ const attendanceData = [
   {
     id: 3,
     subject: "Chemistry",
-    teacher: "Dr. Brown",
+    teacher: "Dr. Umair Khan",
     totalClasses: 38,
     attended: 30,
     percentage: 78.9,
@@ -90,7 +90,7 @@ const attendanceData = [
   {
     id: 4,
     subject: "Computer Science",
-    teacher: "Mr. Wilson",
+    teacher: "Mr. Rohan Joshi",
     totalClasses: 42,
     attended: 40,
     percentage: 95.2,
@@ -99,7 +99,7 @@ const attendanceData = [
   {
     id: 5,
     subject: "English",
-    teacher: "Ms. Davis",
+    teacher: "Ms. Anjali Rao",
     totalClasses: 35,
     attended: 33,
     percentage: 94.3,
@@ -108,7 +108,7 @@ const attendanceData = [
   {
     id: 6,
     subject: "Biology",
-    teacher: "Dr. Taylor",
+    teacher: "Dr. Ayush Kalse",
     totalClasses: 32,
     attended: 25,
     percentage: 78.1,

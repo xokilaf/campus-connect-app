@@ -164,7 +164,7 @@ export default function LoginForm() {
                   <div className="flex items-center space-x-2">
                     <BookOpen className="h-4 w-4" />
                     <div>
-                      <div className="font-medium">Priya Sharma</div>
+                      <div className="font-medium">Devang Keloth</div>
                       <div className="text-xs text-muted-foreground">
                         student1@campus.edu • student
                       </div>
@@ -184,7 +184,7 @@ export default function LoginForm() {
                   <div className="flex items-center space-x-2">
                     <Users className="h-4 w-4" />
                     <div>
-                      <div className="font-medium">Dr. Anjali Verma</div>
+                      <div className="font-medium">Dr. Priya Sharma</div>
                       <div className="text-xs text-muted-foreground">
                         faculty1@campus.edu • faculty
                       </div>

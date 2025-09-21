@@ -44,7 +44,7 @@ const mockNotes: Note[] = [
     title: 'Data Structures - Trees and Graphs',
     description: 'Comprehensive notes covering binary trees, AVL trees, and graph algorithms with examples.',
     subject: 'Data Structures',
-    author: 'Dr. Jane Smith',
+    author: 'Dr. Priya Sharma',
     authorRole: 'faculty',
     uploadDate: '2024-03-10',
     views: 245,
@@ -58,7 +58,7 @@ const mockNotes: Note[] = [
     title: 'Database Systems - Normalization',
     description: 'Detailed explanation of database normalization forms with practical examples.',
     subject: 'Database Systems',
-    author: 'John Doe',
+    author: 'Devang Keloth',
     authorRole: 'student',
     uploadDate: '2024-03-08',
     views: 189,
@@ -72,7 +72,7 @@ const mockNotes: Note[] = [
     title: 'Operating Systems - Process Scheduling',
     description: 'Notes on various process scheduling algorithms and their implementations.',
     subject: 'Operating Systems',
-    author: 'Prof. Robert Brown',
+    author: 'Prof. Vikram Singh',
     authorRole: 'faculty',
     uploadDate: '2024-03-05',
     views: 156,
@@ -86,7 +86,7 @@ const mockNotes: Note[] = [
     title: 'Computer Networks - TCP/IP Protocol',
     description: 'Detailed study of TCP/IP protocol stack and network communication.',
     subject: 'Computer Networks',
-    author: 'Alice Johnson',
+    author: 'Sneha Gupta',
     authorRole: 'student',
     uploadDate: '2024-03-03',
     views: 203,
@@ -177,91 +177,93 @@ export default function NotesSharing() {
           </p>
         </div>
         
-        <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
-          <DialogTrigger asChild>
-            <Button className="flex items-center space-x-2">
-              <Plus className="h-4 w-4" />
-              <span>Upload Notes</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Upload New Notes</DialogTitle>
-              <DialogDescription>
-                Share your study materials with the campus community
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Title *</Label>
-                <Input
-                  id="title"
-                  placeholder="Enter note title"
-                  value={newNote.title}
-                  onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="subject">Subject *</Label>
-                <Select value={newNote.subject} onValueChange={(value) => setNewNote({ ...newNote, subject: value })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select subject" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {subjects.slice(1).map((subject) => (
-                      <SelectItem key={subject} value={subject}>
-                        {subject}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  placeholder="Brief description of the notes"
-                  value={newNote.description}
-                  onChange={(e) => setNewNote({ ...newNote, description: e.target.value })}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="tags">Tags (comma-separated)</Label>
-                <Input
-                  id="tags"
-                  placeholder="algorithms, examples, theory"
-                  value={newNote.tags}
-                  onChange={(e) => setNewNote({ ...newNote, tags: e.target.value })}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="file">File Upload</Label>
-                <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center">
-                  <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground">
-                    Click to upload or drag and drop
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    PDF, DOC, DOCX up to 10MB
-                  </p>
+        {user?.role === 'faculty' && (
+          <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center space-x-2">
+                <Plus className="h-4 w-4" />
+                <span>Upload Notes</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Upload New Notes</DialogTitle>
+                <DialogDescription>
+                  Share your study materials with the campus community
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Title *</Label>
+                  <Input
+                    id="title"
+                    placeholder="Enter note title"
+                    value={newNote.title}
+                    onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="subject">Subject *</Label>
+                  <Select value={newNote.subject} onValueChange={(value) => setNewNote({ ...newNote, subject: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {subjects.slice(1).map((subject) => (
+                        <SelectItem key={subject} value={subject}>
+                          {subject}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Brief description of the notes"
+                    value={newNote.description}
+                    onChange={(e) => setNewNote({ ...newNote, description: e.target.value })}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="tags">Tags (comma-separated)</Label>
+                  <Input
+                    id="tags"
+                    placeholder="algorithms, examples, theory"
+                    value={newNote.tags}
+                    onChange={(e) => setNewNote({ ...newNote, tags: e.target.value })}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="file">File Upload</Label>
+                  <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center">
+                    <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                    <p className="text-sm text-muted-foreground">
+                      Click to upload or drag and drop
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      PDF, DOC, DOCX up to 10MB
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex space-x-2 pt-4">
+                  <Button onClick={handleUploadNote} className="flex-1">
+                    Upload Notes
+                  </Button>
+                  <Button variant="outline" onClick={() => setIsUploadOpen(false)}>
+                    Cancel
+                  </Button>
                 </div>
               </div>
-              
-              <div className="flex space-x-2 pt-4">
-                <Button onClick={handleUploadNote} className="flex-1">
-                  Upload Notes
-                </Button>
-                <Button variant="outline" onClick={() => setIsUploadOpen(false)}>
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       {/* Search and Filter */}

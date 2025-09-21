@@ -1,131 +1,231 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 const timeSlots = [
-  "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-1:30",
-  "1:30-2:30", "2:30-3:30", "3:30-4:30", "4:30-5:30"
+  "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", 
+  "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"
 ];
 
 const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-// Function to add break to all schedules
-const addBreaks = (data) => {
-  const breakSlot = "1:00-1:30";
-  const breakDetails = { subject: "BREAK", teacher: "", room: "" };
-
-  for (const className in data) {
-    for (const day of weekDays) {
-      if (data[className][day]) {
-        data[className][day][breakSlot] = breakDetails;
-      } else {
-        data[className][day] = { [breakSlot]: breakDetails };
-      }
-    }
-  }
-  return data;
-};
-
 // Class-specific timetable data
-let timetableData = {
+const timetableData = {
   "IT-A": {
     "Monday": {
-      "10:00-11:00": { subject: "DBMS", teacher: "AZ", room: "" },
-      "11:00-12:00": { subject: "OE", teacher: "PG", room: "" },
-      "12:00-1:00": { subject: "AT", teacher: "JP", room: "" },
-      "1:30-2:30": { subject: "Java", teacher: "SB", room: "" },
-      "2:30-3:30": { subject: "Lab slots", teacher: "SQL/ADSA/ED", room: "" },
-      "3:30-4:30": { subject: "EVS", teacher: "Proj Lab", room: "" }
+      "9:00 AM": { subject: "Programming", teacher: "Dr. Prakash Raj", room: "IT-101" },
+      "10:00 AM": { subject: "Web Development", teacher: "Prof. Arjun Menon", room: "IT-201" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Database Management", teacher: "Dr. Umair Khan", room: "IT-301" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Software Engineering", teacher: "Ms. Anjali Rao", room: "IT-102" },
+      "3:00 PM": { subject: "System Analysis", teacher: "Mr. Rohan Joshi", room: "IT-401" },
+      "4:00 PM": { subject: "Programming Lab", teacher: "Mr. Rohan Joshi", room: "Lab-A" },
     },
     "Tuesday": {
-      "10:00-11:00": { subject: "AM", teacher: "BD", room: "" },
-      "11:00-12:00": { subject: "ADSA", teacher: "KA", room: "" },
-      "12:00-1:00": { subject: "Java", teacher: "SB", room: "" },
-      "1:30-2:30": { subject: "OE", teacher: "PG", room: "" },
-      "2:30-3:30": { subject: "EVS", teacher: "PG", room: "" },
-      "3:30-4:30": { subject: "ED", teacher: "RS", room: "" },
-      "4:30-5:30": { subject: "EVS", teacher: "Proj Lab", room: "" }
+      "9:00 AM": { subject: "Web Development", teacher: "Prof. Arjun Menon", room: "IT-201" },
+      "10:00 AM": { subject: "Programming", teacher: "Dr. Prakash Raj", room: "IT-101" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Software Engineering", teacher: "Ms. Anjali Rao", room: "IT-102" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Database Management", teacher: "Dr. Umair Khan", room: "IT-301" },
+      "3:00 PM": { subject: "Network Security", teacher: "Dr. Ayush Kalse", room: "IT-302" },
+      "4:00 PM": { subject: "Sports", teacher: "Coach Lee", room: "Ground" },
     },
     "Wednesday": {
-      "10:00-11:00": { subject: "OE", teacher: "PG", room: "" },
-      "11:00-12:00": { subject: "Java", teacher: "SB", room: "" },
-      "12:00-1:00": { subject: "ED", teacher: "RS", room: "" },
-      "1:30-2:30": { subject: "ADSA", teacher: "KA", room: "" },
-      "2:30-3:30": { subject: "EVS", teacher: "Proj Lab", room: "" },
-      "3:30-4:30": { subject: "DBMS", teacher: "AZ", room: "" }
+      "9:00 AM": { subject: "System Analysis", teacher: "Mr. Rohan Joshi", room: "IT-401" },
+      "10:00 AM": { subject: "Database Management", teacher: "Dr. Umair Khan", room: "IT-301" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Programming", teacher: "Dr. Prakash Raj", room: "IT-101" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Web Development", teacher: "Prof. Arjun Menon", room: "IT-201" },
+      "3:00 PM": { subject: "Software Engineering", teacher: "Ms. Anjali Rao", room: "IT-102" },
+      "4:00 PM": { subject: "Library", teacher: "", room: "Library" },
     },
     "Thursday": {
-      "10:00-11:00": { subject: "Lab slots", teacher: "ADSA/JAVA/SQL", room: "" },
-      "11:00-12:00": { subject: "DBMS", teacher: "AZ", room: "" },
-      "12:00-1:00": { subject: "AM", teacher: "BD", room: "" },
-      "1:30-2:30": { subject: "AT", teacher: "JP", room: "" },
-      "2:30-3:30": { subject: "EVS", teacher: "PG", room: "" },
-      "3:30-4:30": { subject: "OE", teacher: "PG", room: "" }
+      "9:00 AM": { subject: "Network Security", teacher: "Dr. Ayush Kalse", room: "IT-302" },
+      "10:00 AM": { subject: "Software Engineering", teacher: "Ms. Anjali Rao", room: "IT-102" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "System Analysis", teacher: "Mr. Rohan Joshi", room: "IT-401" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Programming", teacher: "Dr. Prakash Raj", room: "IT-101" },
+      "3:00 PM": { subject: "Web Development", teacher: "Prof. Arjun Menon", room: "IT-201" },
+      "4:00 PM": { subject: "Programming Lab", teacher: "Dr. Ayush Kalse", room: "Lab-B" },
     },
     "Friday": {
-      "10:00-11:00": { subject: "Java", teacher: "SB", room: "" },
-      "11:00-12:00": { subject: "ADSA", teacher: "KA", room: "" },
-      "12:00-1:00": { subject: "AT", teacher: "JP", room: "" },
-      "1:30-2:30": { subject: "ED", teacher: "RS", room: "" },
-      "2:30-3:30": { subject: "AM", teacher: "BD", room: "" },
-      "3:30-4:30": { subject: "EVS", teacher: "Proj Lab", room: "" },
-      "4:30-5:30": { subject: "ED", teacher: "Lab 209", room: "" }
-    }
+      "9:00 AM": { subject: "Database Management", teacher: "Dr. Umair Khan", room: "IT-301" },
+      "10:00 AM": { subject: "Network Security", teacher: "Dr. Ayush Kalse", room: "IT-302" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Web Development", teacher: "Prof. Arjun Menon", room: "IT-201" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "System Analysis", teacher: "Mr. Rohan Joshi", room: "IT-401" },
+      "3:00 PM": { subject: "Programming", teacher: "Dr. Prakash Raj", room: "IT-101" },
+      "4:00 PM": { subject: "Project Work", teacher: "", room: "IT-401" },
+    },
   },
   "IT-B": {
     "Monday": {
-      "10:00-11:00": { subject: "Lab slots", teacher: "ED/EVS", room: "" },
-      "12:00-1:00": { subject: "ADSA", teacher: "KA", room: "" },
-      "1:30-2:30": { subject: "DBMS", teacher: "AZ", room: "" },
-      "2:30-3:30": { subject: "AT", teacher: "JP", room: "" },
-      "3:30-4:30": { subject: "Lab slots", teacher: "ADSA/JAVA/SQL", room: "" },
-      "4:30-5:30": { subject: "EVS", teacher: "Proj Lab", room: "" }
+      "9:00 AM": { subject: "Programming", teacher: "Dr. Smith", room: "IT-103" },
+      "10:00 AM": { subject: "Web Development", teacher: "Prof. Johnson", room: "IT-203" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Database Management", teacher: "Dr. Brown", room: "IT-303" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "IT-104" },
+      "3:00 PM": { subject: "System Analysis", teacher: "Mr. Wilson", room: "IT-403" },
+      "4:00 PM": { subject: "Programming Lab", teacher: "Mr. Wilson", room: "Lab-C" },
     },
     "Tuesday": {
-      "10:00-11:00": { subject: "OE", teacher: "PG", room: "" },
-      "11:00-12:00": { subject: "Java", teacher: "SB", room: "" },
-      "12:00-1:00": { subject: "Java", teacher: "SB", room: "" },
-      "1:30-2:30": { subject: "AT", teacher: "JP", room: "" },
-      "2:30-3:30": { subject: "ED", teacher: "RS", room: "" },
-      "3:30-4:30": { subject: "DBMS", teacher: "AZ", room: "" },
-      "4:30-5:30": { subject: "EVS", teacher: "Proj Lab", room: "" }
+      "9:00 AM": { subject: "Web Development", teacher: "Prof. Johnson", room: "IT-203" },
+      "10:00 AM": { subject: "Programming", teacher: "Dr. Smith", room: "IT-103" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "IT-104" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Database Management", teacher: "Dr. Brown", room: "IT-303" },
+      "3:00 PM": { subject: "Network Security", teacher: "Dr. Taylor", room: "IT-304" },
+      "4:00 PM": { subject: "Sports", teacher: "Coach Lee", room: "Ground" },
     },
     "Wednesday": {
-      "10:00-11:00": { subject: "DBMS", teacher: "AZ", room: "" },
-      "11:00-12:00": { subject: "AM", teacher: "BD", room: "" },
-      "1:30-2:30": { subject: "Lab slots", teacher: "SQL/ADSA/JAVA", room: "" },
-      "3:30-4:30": { subject: "EVS", teacher: "Proj Lab", room: "" }
+      "9:00 AM": { subject: "System Analysis", teacher: "Mr. Wilson", room: "IT-403" },
+      "10:00 AM": { subject: "Database Management", teacher: "Dr. Brown", room: "IT-303" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Programming", teacher: "Dr. Smith", room: "IT-103" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Web Development", teacher: "Prof. Johnson", room: "IT-203" },
+      "3:00 PM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "IT-104" },
+      "4:00 PM": { subject: "Library", teacher: "", room: "Library" },
     },
     "Thursday": {
-      "10:00-11:00": { subject: "Lab slots", teacher: "JAVA/SQL/ADSA", room: "" },
-      "11:00-12:00": { subject: "AM", teacher: "BD", room: "" },
-      "1:30-2:30": { subject: "ADSA", teacher: "KA", room: "" },
-      "2:30-3:30": { subject: "EVS", teacher: "PG", room: "" },
-      "3:30-4:30": { subject: "ED", teacher: "Lab 309", room: "" }
+      "9:00 AM": { subject: "Network Security", teacher: "Dr. Taylor", room: "IT-304" },
+      "10:00 AM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "IT-104" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "System Analysis", teacher: "Mr. Wilson", room: "IT-403" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Programming", teacher: "Dr. Smith", room: "IT-103" },
+      "3:00 PM": { subject: "Web Development", teacher: "Prof. Johnson", room: "IT-203" },
+      "4:00 PM": { subject: "Programming Lab", teacher: "Dr. Taylor", room: "Lab-D" },
     },
     "Friday": {
-      "10:00-11:00": { subject: "ADSA", teacher: "KA", room: "" },
-      "11:00-12:00": { subject: "AT", teacher: "JP", room: "" },
-      "12:00-1:00": { subject: "OE", teacher: "PG", room: "" },
-      "1:30-2:30": { subject: "ED", teacher: "RS", room: "" },
-      "2:30-3:30": { subject: "AM", teacher: "BD", room: "" },
-      "3:30-4:30": { subject: "ED", teacher: "Lab 309", room: "" }
-    }
+      "9:00 AM": { subject: "Database Management", teacher: "Dr. Brown", room: "IT-303" },
+      "10:00 AM": { subject: "Network Security", teacher: "Dr. Taylor", room: "IT-304" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Web Development", teacher: "Prof. Johnson", room: "IT-203" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "System Analysis", teacher: "Mr. Wilson", room: "IT-403" },
+      "3:00 PM": { subject: "Programming", teacher: "Dr. Smith", room: "IT-103" },
+      "4:00 PM": { subject: "Project Work", teacher: "", room: "IT-403" },
+    },
   },
-  "CSE-A": {},
-  "CSE-B": {},
+  "CSE-A": {
+    "Monday": {
+      "9:00 AM": { subject: "Data Structures", teacher: "Dr. Smith", room: "CS-101" },
+      "10:00 AM": { subject: "Computer Networks", teacher: "Prof. Johnson", room: "CS-205" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Database Systems", teacher: "Dr. Brown", room: "CS-301" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "CS-102" },
+      "3:00 PM": { subject: "Operating Systems", teacher: "Mr. Wilson", room: "CS-401" },
+      "4:00 PM": { subject: "Programming Lab", teacher: "Mr. Wilson", room: "Lab-A" },
+    },
+    "Tuesday": {
+      "9:00 AM": { subject: "Computer Networks", teacher: "Prof. Johnson", room: "CS-205" },
+      "10:00 AM": { subject: "Data Structures", teacher: "Dr. Smith", room: "CS-101" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "CS-102" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Database Systems", teacher: "Dr. Brown", room: "CS-301" },
+      "3:00 PM": { subject: "Machine Learning", teacher: "Dr. Taylor", room: "CS-302" },
+      "4:00 PM": { subject: "Sports", teacher: "Coach Lee", room: "Ground" },
+    },
+    "Wednesday": {
+      "9:00 AM": { subject: "Operating Systems", teacher: "Mr. Wilson", room: "CS-401" },
+      "10:00 AM": { subject: "Database Systems", teacher: "Dr. Brown", room: "CS-301" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Data Structures", teacher: "Dr. Smith", room: "CS-101" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Computer Networks", teacher: "Prof. Johnson", room: "CS-205" },
+      "3:00 PM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "CS-102" },
+      "4:00 PM": { subject: "Library", teacher: "", room: "Library" },
+    },
+    "Thursday": {
+      "9:00 AM": { subject: "Machine Learning", teacher: "Dr. Taylor", room: "CS-302" },
+      "10:00 AM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "CS-102" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Operating Systems", teacher: "Mr. Wilson", room: "CS-401" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Data Structures", teacher: "Dr. Smith", room: "CS-101" },
+      "3:00 PM": { subject: "Computer Networks", teacher: "Prof. Johnson", room: "CS-205" },
+      "4:00 PM": { subject: "Programming Lab", teacher: "Dr. Taylor", room: "Lab-B" },
+    },
+    "Friday": {
+      "9:00 AM": { subject: "Database Systems", teacher: "Dr. Brown", room: "CS-301" },
+      "10:00 AM": { subject: "Machine Learning", teacher: "Dr. Taylor", room: "CS-302" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Computer Networks", teacher: "Prof. Johnson", room: "CS-205" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Operating Systems", teacher: "Mr. Wilson", room: "CS-401" },
+      "3:00 PM": { subject: "Data Structures", teacher: "Dr. Smith", room: "CS-101" },
+      "4:00 PM": { subject: "Project Work", teacher: "", room: "CS-401" },
+    },
+  },
+  "CSE-B": {
+    "Monday": {
+      "9:00 AM": { subject: "Data Structures", teacher: "Dr. Smith", room: "CS-103" },
+      "10:00 AM": { subject: "Computer Networks", teacher: "Prof. Johnson", room: "CS-207" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Database Systems", teacher: "Dr. Brown", room: "CS-303" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "CS-104" },
+      "3:00 PM": { subject: "Operating Systems", teacher: "Mr. Wilson", room: "CS-403" },
+      "4:00 PM": { subject: "Programming Lab", teacher: "Mr. Wilson", room: "Lab-C" },
+    },
+    "Tuesday": {
+      "9:00 AM": { subject: "Computer Networks", teacher: "Prof. Johnson", room: "CS-207" },
+      "10:00 AM": { subject: "Data Structures", teacher: "Dr. Smith", room: "CS-103" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "CS-104" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Database Systems", teacher: "Dr. Brown", room: "CS-303" },
+      "3:00 PM": { subject: "Machine Learning", teacher: "Dr. Taylor", room: "CS-304" },
+      "4:00 PM": { subject: "Sports", teacher: "Coach Lee", room: "Ground" },
+    },
+    "Wednesday": {
+      "9:00 AM": { subject: "Operating Systems", teacher: "Mr. Wilson", room: "CS-403" },
+      "10:00 AM": { subject: "Database Systems", teacher: "Dr. Brown", room: "CS-303" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Data Structures", teacher: "Dr. Smith", room: "CS-103" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Computer Networks", teacher: "Prof. Johnson", room: "CS-207" },
+      "3:00 PM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "CS-104" },
+      "4:00 PM": { subject: "Library", teacher: "", room: "Library" },
+    },
+    "Thursday": {
+      "9:00 AM": { subject: "Machine Learning", teacher: "Dr. Taylor", room: "CS-304" },
+      "10:00 AM": { subject: "Software Engineering", teacher: "Ms. Davis", room: "CS-104" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Operating Systems", teacher: "Mr. Wilson", room: "CS-403" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Data Structures", teacher: "Dr. Smith", room: "CS-103" },
+      "3:00 PM": { subject: "Computer Networks", teacher: "Prof. Johnson", room: "CS-207" },
+      "4:00 PM": { subject: "Programming Lab", teacher: "Dr. Taylor", room: "Lab-D" },
+    },
+    "Friday": {
+      "9:00 AM": { subject: "Database Systems", teacher: "Dr. Brown", room: "CS-303" },
+      "10:00 AM": { subject: "Machine Learning", teacher: "Dr. Taylor", room: "CS-304" },
+      "11:00 AM": { subject: "Break", teacher: "", room: "" },
+      "12:00 PM": { subject: "Computer Networks", teacher: "Prof. Johnson", room: "CS-207" },
+      "1:00 PM": { subject: "Lunch", teacher: "", room: "" },
+      "2:00 PM": { subject: "Operating Systems", teacher: "Mr. Wilson", room: "CS-403" },
+      "3:00 PM": { subject: "Data Structures", teacher: "Dr. Smith", room: "CS-103" },
+      "4:00 PM": { subject: "Project Work", teacher: "", room: "CS-403" },
+    },
+  },
 };
-
-timetableData = addBreaks(timetableData);
 
 // Faculty's personal timetable
 const facultyTimetable = {
-  "Dr. Anjali Verma": {
+  "Dr. Smith": {
     "Monday": {
       "9:00 AM": { class: "CSE-A", subject: "Data Structures", room: "CS-101" },
       "9:00 AM_IT": { class: "IT-A", subject: "Programming", room: "IT-101" },
@@ -157,38 +257,11 @@ export default function Timetable() {
   const [viewType, setViewType] = useState<'class' | 'personal'>(
     user?.role === 'faculty' ? 'personal' : 'class'
   );
-  const timetableRef = useRef(null);
-
-  const handleDownloadPdf = () => {
-    const input = timetableRef.current;
-    if (input) {
-      html2canvas(input, { scale: 2 })
-        .then((canvas) => {
-          const imgData = canvas.toDataURL('image/png');
-          const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape
-          const pdfWidth = pdf.internal.pageSize.getWidth();
-          const pdfHeight = pdf.internal.pageSize.getHeight();
-          const canvasWidth = canvas.width;
-          const canvasHeight = canvas.height;
-          const ratio = canvasWidth / canvasHeight;
-          let newWidth = pdfWidth;
-          let newHeight = newWidth / ratio;
-          if (newHeight > pdfHeight) {
-            newHeight = pdfHeight;
-            newWidth = newHeight * ratio;
-          }
-          const x = (pdfWidth - newWidth) / 2;
-          const y = (pdfHeight - newHeight) / 2;
-          pdf.addImage(imgData, 'PNG', x, y, newWidth, newHeight);
-          pdf.save(`timetable-${selectedClass}.pdf`);
-        });
-    }
-  };
 
   const getSubjectBadgeVariant = (subject: string) => {
-    if (subject.toUpperCase() === "BREAK" || subject.toUpperCase() === "LUNCH") return "secondary";
-    if (subject.includes("Lab") || subject.toUpperCase() === "SPORTS") return "destructive";
-    if (subject.toUpperCase() === "LIBRARY" || subject.toUpperCase() === "ASSEMBLY" || subject.toUpperCase() === "PROJECT WORK") return "outline";
+    if (subject === "Break" || subject === "Lunch") return "secondary";
+    if (subject === "Lab" || subject === "Sports" || subject.includes("Lab")) return "destructive";
+    if (subject === "Library" || subject === "Assembly" || subject === "Project Work") return "outline";
     return "default";
   };
 
@@ -203,14 +276,11 @@ export default function Timetable() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Timetable</h1>
-          <p className="text-muted-foreground">
-            {user?.role === 'faculty' ? 'Manage class schedules and view your timetable' : 'Your weekly class schedule'}
-          </p>
-        </div>
-        <Button onClick={handleDownloadPdf}>Download PDF</Button>
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">Timetable</h1>
+        <p className="text-muted-foreground">
+          {user?.role === 'faculty' ? 'Manage class schedules and view your timetable' : 'Your weekly class schedule'}
+        </p>
       </div>
 
       {user?.role === 'faculty' && (
@@ -255,7 +325,7 @@ export default function Timetable() {
         </div>
       )}
 
-      <Card ref={timetableRef}>
+      <Card>
         <CardHeader>
           <CardTitle>
             {user?.role === 'faculty' && viewType === 'personal'
@@ -289,10 +359,16 @@ export default function Timetable() {
                         {classData ? (
                           <div className="border rounded-lg p-3 h-full bg-card hover:bg-accent transition-colors">
                             <Badge 
-                              variant={getSubjectBadgeVariant(classData.subject || '')}
+                              variant={getSubjectBadgeVariant(
+                                user?.role === 'faculty' && viewType === 'personal'
+                                  ? classData.subject || ''
+                                  : classData.subject || ''
+                              )}
                               className="mb-2"
                             >
-                              {classData.subject}
+                              {user?.role === 'faculty' && viewType === 'personal'
+                                ? classData.subject
+                                : classData.subject}
                             </Badge>
                             {user?.role === 'faculty' && viewType === 'personal' ? (
                               <>
