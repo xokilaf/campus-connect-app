@@ -318,7 +318,7 @@ export default function Timetable() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleSaveChanges}>Save Changes</DImodal>
+            <Button onClick={handleSaveChanges}>Save Changes</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
