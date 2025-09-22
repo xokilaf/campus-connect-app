@@ -58,8 +58,8 @@ const mockNotes: Note[] = [
     title: 'Database Systems - Normalization',
     description: 'Detailed explanation of database normalization forms with practical examples.',
     subject: 'Database Systems',
-    author: 'Devang Keloth',
-    authorRole: 'student',
+    author: 'Prof. Devang Mehta',
+    authorRole: 'faculty',
     uploadDate: '2024-03-08',
     views: 189,
     rating: 4.5,
@@ -86,8 +86,8 @@ const mockNotes: Note[] = [
     title: 'Computer Networks - TCP/IP Protocol',
     description: 'Detailed study of TCP/IP protocol stack and network communication.',
     subject: 'Computer Networks',
-    author: 'Sneha Gupta',
-    authorRole: 'student',
+    author: 'Dr. Sneha Verma',
+    authorRole: 'faculty',
     uploadDate: '2024-03-03',
     views: 203,
     rating: 4.6,
@@ -134,7 +134,7 @@ export default function NotesSharing() {
       description: newNote.description,
       subject: newNote.subject,
       author: user?.name || 'Unknown',
-      authorRole: user?.role || 'student',
+      authorRole: user?.role || 'faculty',
       uploadDate: new Date().toISOString().split('T')[0],
       views: 0,
       rating: 0,
@@ -308,8 +308,8 @@ export default function NotesSharing() {
                     {note.description}
                   </CardDescription>
                 </div>
-                <Badge variant={note.authorRole === 'faculty' ? 'default' : 'secondary'}>
-                  {note.authorRole === 'faculty' ? 'Faculty' : 'Student'}
+                <Badge variant={'default'}>
+                  {'Faculty'}
                 </Badge>
               </div>
             </CardHeader>
